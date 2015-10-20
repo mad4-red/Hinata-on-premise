@@ -19,6 +19,8 @@ namespace Hinata.Data.Models
 
         public string Body { get; set; }
 
+        public string Comment { get; set; }
+
         public DateTime LastModifiedDateTime { get; set; }
 
         public DraftRegisterDataModel(Draft draft)
@@ -29,6 +31,7 @@ namespace Hinata.Data.Models
             Title = draft.Title;
             Body = draft.Body;
             LastModifiedDateTime = draft.LastModifiedDateTime;
+            Comment = draft.Comment;
         }
     }
 
@@ -48,9 +51,15 @@ namespace Hinata.Data.Models
 
         public DateTime ItemCreatedDateTime { get; set; }
 
+        public int ItemRevisionCount { get; set; }
+
         public DateTime LastModifiedDateTime { get; set; }
 
         public string Tags { get; set; }
+
+        public string Comment { get; set; }
+
+        public int CurrentRevisionNo { get; set; }
 
         public Draft ToEntity()
         {
@@ -62,7 +71,10 @@ namespace Hinata.Data.Models
                 Type = Type,
                 ItemIsPublic = ItemIsPublic,
                 ItemCreatedDateTime = ItemCreatedDateTime,
-                LastModifiedDateTime = LastModifiedDateTime
+                ItemRevisionCount = ItemRevisionCount,
+                LastModifiedDateTime = LastModifiedDateTime,
+                Comment = Comment,
+                CurrentRevisionNo = CurrentRevisionNo,
             };
 
             if (!string.IsNullOrWhiteSpace(Author))
@@ -88,16 +100,16 @@ namespace Hinata.Data.Models
             var jObjectTags = JObject.Parse(jsonTags)["Tags"]["Tag"];
             if (jObjectTags.Type == JTokenType.Array)
             {
-                var tags = JsonConvert.DeserializeObject<IEnumerable<Tag>>(jObjectTags.ToString());
+                var tags = JsonConvert.DeserializeObject<IEnumerable<ItemTag>>(jObjectTags.ToString());
                 foreach (var tag in tags)
                 {
-                    draft.Tags.Add(tag);
+                    draft.ItemTags.Add(tag);
                 }
             }
             else
             {
-                var tag = JsonConvert.DeserializeObject<Tag>(jObjectTags.ToString());
-                draft.Tags.Add(tag);
+                var tag = JsonConvert.DeserializeObject<ItemTag>(jObjectTags.ToString());
+                draft.ItemTags.Add(tag);
             }
 
             return draft;

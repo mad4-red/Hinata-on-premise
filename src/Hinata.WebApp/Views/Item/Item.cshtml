@@ -11,10 +11,10 @@
         <div class="item-title">
             <h2>@Model.Title</h2>
             <ul class="item-box-tag-list">
-                @foreach (var tag in Model.Tags)
+                @foreach (var tag in Model.ItemTags)
                 {
                     var tagversion = string.IsNullOrWhiteSpace(tag.Version) ? tag.Name : string.Format("{0}[{1}]", tag.Name, tag.Version);
-                    <li class="tag">@tagversion</li>
+                    <li class="tag"><a href="@Url.Action("ItemList","Tag", new {name = tag.Name})">@tagversion</a></li>
                 }
             </ul>
         </div>
@@ -42,8 +42,12 @@
             @Html.ActionLink(Model.AuthorDisplayName, "Index", "User", new { name = @Model.AuthorName }, null)&nbsp;さんが&nbsp;@Model.CreatedDateTime.ToString("yyyy/MM/dd HH:mm:ss")&nbsp;に作成
             @if (Model.HasModified)
             {
-                <span>&nbsp;&nbsp;</span>@Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
-                <span>に編集</span>
+                <span>&nbsp;(</span>@Model.LastModifiedDateTime.ToString("yyyy/MM/dd HH:mm:ss")
+                <span>に編集)</span>
+            }
+            @if (Model.HasRevision)
+            {
+                <span>&nbsp;・&nbsp;</span><a href="@Url.Action("Revisions","Item",new {id = Model.Id})">編集履歴(@Model.RevisionCount)</a>
             }
         </div>
     </div>

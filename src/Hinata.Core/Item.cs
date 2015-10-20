@@ -4,7 +4,7 @@ namespace Hinata
 {
     public class Item
     {
-        private readonly TagCollection _tags = new TagCollection();
+        private readonly ItemTagCollection _itemTags = new ItemTagCollection();
 
         public string Id { get; internal set; }
 
@@ -20,11 +20,17 @@ namespace Hinata
 
         public int CommentCount { get; internal set; }
 
-        public TagCollection Tags { get { return _tags; } }
+        public ItemTagCollection ItemTags { get { return _itemTags; } }
 
         public DateTime CreatedDateTime { get; internal set; }
 
         public DateTime LastModifiedDateTime { get; set; }
+
+        public int RevisionNo { get; internal set; }
+
+        public int RevisionCount { get; internal set; }
+
+        internal string Comment { get; set; }
 
         internal Item()
         {
@@ -32,7 +38,10 @@ namespace Hinata
 
         public Draft ToDraft()
         {
-            return new Draft(this);
+            return new Draft(this)
+            {
+                CurrentRevisionNo = RevisionNo,
+            };
         }
 
         public Comment NewComment(User user)

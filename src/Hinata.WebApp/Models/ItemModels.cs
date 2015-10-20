@@ -25,13 +25,13 @@ namespace Hinata.Models
 
         public int CommentCount { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public ItemTagCollection ItemTags { get; set; }
 
         public bool HasModified { get { return LastModifiedDateTime > CreatedDateTime; } }
 
         public ItemIndexModel()
         {
-            Tags = new TagCollection();
+            ItemTags = new ItemTagCollection();
         }
     }
 
@@ -53,7 +53,7 @@ namespace Hinata.Models
 
         public bool IsPublic { get; set; }
 
-        public TagCollection Tags { get; set; }
+        public ItemTagCollection ItemTags { get; set; }
 
         public DateTime CreatedDateTime { get; set; }
 
@@ -68,6 +68,10 @@ namespace Hinata.Models
 
         public string HtmlBody { get; set; }
 
+        public int RevisionCount { get; set; }
+
+        public bool HasRevision { get { return (RevisionCount > 1); } }
+
         public List<CommentViewModel> Comments
         {
             get { return _comments; }
@@ -77,7 +81,29 @@ namespace Hinata.Models
 
         public ItemViewModel()
         {
-            Tags = new TagCollection();
+            ItemTags = new ItemTagCollection();
         }
+    }
+
+    public class ItemRevisionDetailModel
+    {
+        public string ItemId { get; set; }
+
+        public int RevisionNo { get; set; }
+
+        public DateTime ModifiedDateTime { get; set; }
+
+        public string Comment { get; set; }
+
+        public string Title { get; set; }
+
+        public ItemTagCollection ItemTags { get; set; }
+
+        public string Body { get; set; }
+
+        public bool IsFirst { get; set; }
+
+        public bool IsCurrent { get; set; }
+
     }
 }

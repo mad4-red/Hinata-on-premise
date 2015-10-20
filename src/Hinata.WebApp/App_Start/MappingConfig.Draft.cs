@@ -48,13 +48,22 @@ namespace Hinata
                 .ForMember(d => d.ItemType, o => o.MapFrom(s => s.Type))
                 .AfterMap((s, d) =>
                 {
+                    if (s.IsContributed)
+                    {
+                        d.ItemIsPrivate = !s.ItemIsPublic;
+                    }
+                    else
+                    {
+                        d.ItemIsPrivate = false;
+                    }
+
                     using (var parser = new MarkdownParser())
                     {
                         d.Html = parser.Transform(s.Body);
                     }
 
                     var isFirst = true;
-                    foreach (var tag in s.Tags)
+                    foreach (var tag in s.ItemTags)
                     {
                         if (!isFirst) d.TagInlineString += " ";
                         d.TagInlineString += tag.Name;
@@ -65,12 +74,14 @@ namespace Hinata
                 });
             Mapper.CreateMap<DraftEditModel, Draft>()
                 .ForMember(d => d.Type, o => o.MapFrom(s => s.ItemType))
+                .ForMember(d => d.ItemIsPublic, o => o.MapFrom(s => !s.ItemIsPrivate))
+                .ForMember(d => d.CurrentRevisionNo, o => o.Ignore())
                 .AfterMap((s, d) =>
                 {
-                    d.Tags.Clear();
+                    d.ItemTags.Clear();
                     foreach (var tag in s.CreateTagCollectionFromInlineText())
                     {
-                        d.Tags.Add(tag);
+                        d.ItemTags.Add(tag);
                     }
                 });
         }
